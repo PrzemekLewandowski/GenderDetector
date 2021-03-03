@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -23,13 +23,13 @@ import static org.mockito.Mockito.when;
 class GenderServiceTest implements WithAssertions {
 
     @MockBean
-    private FileCrawler fileCrawler;
+    private NameCounter nameCounter;
 
     private GenderService genderService;
 
     @BeforeAll
     public void init() {
-        genderService = new GenderService(fileCrawler);
+        genderService = new GenderService(nameCounter);
     }
 
     @Test
@@ -38,8 +38,8 @@ class GenderServiceTest implements WithAssertions {
         String name = "Andrzej";
 
         // when
-        when(fileCrawler.doesFemaleFileContainsName(anyString())).thenReturn(false);
-        when(fileCrawler.doesMaleFileContainsName(anyString())).thenReturn(true);
+        when(nameCounter.countFemaleNames(any())).thenReturn(0L);
+        when(nameCounter.countMaleNames(any())).thenReturn(1L);
         ResponseEntity<String> responseEntity = genderService.detectGenderByFirstToken(name);
 
         // then

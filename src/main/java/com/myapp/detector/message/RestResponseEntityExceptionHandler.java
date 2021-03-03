@@ -1,6 +1,6 @@
 package com.myapp.detector.message;
 
-import com.myapp.detector.service.exception.FileCrawlerException;
+import com.myapp.detector.service.exception.NameCounterException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,9 +19,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     }
 
     @ResponseBody
-    @ExceptionHandler(FileCrawlerException.class)
+    @ExceptionHandler(NameCounterException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected String handleFileCrawlerException(FileCrawlerException exception) {
+    protected String handleFileCrawlerException(NameCounterException exception) {
         return exception.getMessage();
     }
 }

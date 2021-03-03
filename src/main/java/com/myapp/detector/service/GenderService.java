@@ -1,42 +1,42 @@
 package com.myapp.detector.service;
 
-import com.myapp.detector.service.exception.FileCrawlerException;
+import com.myapp.detector.domain.Result;
+import com.myapp.detector.utils.InputParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class GenderService {
-    private static final String DELIMITER = " ";
-    private static final String MALE = "MALE";
-    private static final String FEMALE = "FEMALE";
-    private static final String INCONCLUSIVE = "INCONCLUSIVE";
-    private final FileCrawler fileCrawler;
+
+    private final NameCounter nameCounter;
 
     public ResponseEntity<String> detectGenderByFirstToken(String input) {
-        String name = input.split(DELIMITER)[0].toUpperCase();
-        try {
-            boolean maleFileContainsName = fileCrawler.doesMaleFileContainsName(name);
-            boolean femaleFileContainsName = fileCrawler.doesFemaleFileContainsName(name);
-            if (maleFileContainsName && !femaleFileContainsName) {
-                return new ResponseEntity<>(MALE, HttpStatus.OK);
-            } else if (!maleFileContainsName && femaleFileContainsName) {
-                return new ResponseEntity<>(FEMALE, HttpStatus.OK);
-            } else if (maleFileContainsName) {
-                return new ResponseEntity<>(INCONCLUSIVE, HttpStatus.OK);
-            }
-        } catch (IOException | URISyntaxException e) {
-            throw new FileCrawlerException("There is problem with file.", e);
-        }
-        return new ResponseEntity<>("There is no name in both files.", HttpStatus.NOT_FOUND);
+        List<String> name = InputParser.parseInputForFirstToken(input);
+        long maleNamesAmount = nameCounter.countMaleNames(name);
+        long femaleNamesAmount = nameCounter.countFemaleNames(name);
+        return getResult(maleNamesAmount, femaleNamesAmount);
     }
 
     public ResponseEntity<String> detectGenderByAllTokens(String input) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        List<String> names = InputParser.parseInputForAllTokens(input);
+        long maleNamesAmount = nameCounter.countMaleNames(names);
+        long femaleNamesAmount = nameCounter.countFemaleNames(names);
+        return getResult(maleNamesAmount, femaleNamesAmount);
+    }
+
+    private ResponseEntity<String> getResult(long maleNamesAmount, long femaleNamesAmount) {
+        if (maleNamesAmount > femaleNamesAmount) {
+            return new ResponseEntity<>(Result.MALE.name(), HttpStatus.OK);
+        } else if (maleNamesAmount < femaleNamesAmount) {
+            return new ResponseEntity<>(Result.FEMALE.name(), HttpStatus.OK);
+        } else if (maleNamesAmount > 0) {
+            return new ResponseEntity<>(Result.INCONCLUSIVE.name(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>("There is no name in both files.", HttpStatus.NOT_FOUND);
     }
 }
