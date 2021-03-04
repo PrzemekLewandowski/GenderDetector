@@ -1,6 +1,6 @@
 package com.myapp.detector.message;
 
-import com.myapp.detector.service.exception.NameCounterException;
+import com.myapp.detector.service.exception.FileServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,15 +13,15 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ResponseBody
     @ExceptionHandler(UnsupportedOperationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     protected String handleUnsupportedOperationException(UnsupportedOperationException exception) {
         return exception.getMessage();
     }
 
     @ResponseBody
-    @ExceptionHandler(NameCounterException.class)
+    @ExceptionHandler(FileServiceException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected String handleFileCrawlerException(NameCounterException exception) {
+    protected String handleFileCrawlerException(FileServiceException exception) {
         return exception.getMessage();
     }
 }

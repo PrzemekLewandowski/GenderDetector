@@ -27,20 +27,20 @@ class GenderServiceTest implements WithAssertions {
     private static final String NAME_NOT_FOUND_MESSAGE = "There is no name in both files.";
 
     @MockBean
-    private NameCounter nameCounter;
+    private FileService fileService;
 
     private GenderService genderService;
 
     @BeforeAll
     public void init() {
-        genderService = new GenderService(nameCounter);
+        genderService = new GenderService(fileService);
     }
 
     @Test
     void shouldDetectMaleGender() {
         // when
-        when(nameCounter.countFemaleNames(any())).thenReturn(0L);
-        when(nameCounter.countMaleNames(any())).thenReturn(1L);
+        when(fileService.countFemaleNames(any())).thenReturn(0L);
+        when(fileService.countMaleNames(any())).thenReturn(1L);
         ResponseEntity<String> responseEntity = genderService.detectGenderByFirstToken(MALE_NAME);
 
         // then
@@ -51,8 +51,8 @@ class GenderServiceTest implements WithAssertions {
     @Test
     void shouldDetectFemaleGender() {
         // when
-        when(nameCounter.countFemaleNames(any())).thenReturn(1L);
-        when(nameCounter.countMaleNames(any())).thenReturn(0L);
+        when(fileService.countFemaleNames(any())).thenReturn(1L);
+        when(fileService.countMaleNames(any())).thenReturn(0L);
         ResponseEntity<String> responseEntity = genderService.detectGenderByFirstToken(FEMALE_NAME);
 
         // then
@@ -63,8 +63,8 @@ class GenderServiceTest implements WithAssertions {
     @Test
     void shouldDetectInconclusiveGender() {
         // when
-        when(nameCounter.countFemaleNames(any())).thenReturn(1L);
-        when(nameCounter.countMaleNames(any())).thenReturn(1L);
+        when(fileService.countFemaleNames(any())).thenReturn(1L);
+        when(fileService.countMaleNames(any())).thenReturn(1L);
         ResponseEntity<String> responseEntity = genderService.detectGenderByFirstToken(INCONCLUSIVE_NAME);
 
         // then
@@ -75,8 +75,8 @@ class GenderServiceTest implements WithAssertions {
     @Test
     void shouldReturnResponseEntityWithNotFoundHttpStatus() {
         // when
-        when(nameCounter.countFemaleNames(any())).thenReturn(0L);
-        when(nameCounter.countMaleNames(any())).thenReturn(0L);
+        when(fileService.countFemaleNames(any())).thenReturn(0L);
+        when(fileService.countMaleNames(any())).thenReturn(0L);
         ResponseEntity<String> responseEntity = genderService.detectGenderByFirstToken(NOT_EXISTING_NAME);
 
         // then

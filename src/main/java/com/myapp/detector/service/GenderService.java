@@ -13,19 +13,19 @@ import java.util.List;
 @Service
 public class GenderService {
 
-    private final NameCounter nameCounter;
+    private final FileService fileService;
 
     public ResponseEntity<String> detectGenderByFirstToken(String input) {
         List<String> name = InputParser.parseInputForFirstToken(input);
-        long maleNamesAmount = nameCounter.countMaleNames(name);
-        long femaleNamesAmount = nameCounter.countFemaleNames(name);
+        long maleNamesAmount = fileService.countMaleNames(name);
+        long femaleNamesAmount = fileService.countFemaleNames(name);
         return getResult(maleNamesAmount, femaleNamesAmount);
     }
 
     public ResponseEntity<String> detectGenderByAllTokens(String input) {
         List<String> names = InputParser.parseInputForAllTokens(input);
-        long maleNamesAmount = nameCounter.countMaleNames(names);
-        long femaleNamesAmount = nameCounter.countFemaleNames(names);
+        long maleNamesAmount = fileService.countMaleNames(names);
+        long femaleNamesAmount = fileService.countFemaleNames(names);
         return getResult(maleNamesAmount, femaleNamesAmount);
     }
 
