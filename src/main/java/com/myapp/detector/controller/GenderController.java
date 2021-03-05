@@ -1,6 +1,7 @@
 package com.myapp.detector.controller;
 
 import com.myapp.detector.controller.exception.ResponseStreamException;
+import com.myapp.detector.message.LogExecutionTime;
 import com.myapp.detector.service.FileService;
 import com.myapp.detector.service.GenderService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class GenderController {
     private final GenderService genderService;
     private final FileService fileService;
 
+    @LogExecutionTime
     @GetMapping("/detectGender")
     public ResponseEntity<String> detectGender(String input) {
         if (StringUtils.containsIgnoreCase(input, FIRST_TOKEN_OPTION)) {

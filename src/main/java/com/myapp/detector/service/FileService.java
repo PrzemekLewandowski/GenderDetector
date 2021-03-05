@@ -53,7 +53,7 @@ public class FileService {
 
     private long countNames(Resource resource, List<String> names) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
-            return reader.lines().filter(names::contains).count();
+            return reader.lines().parallel().filter(names::contains).count();
         } catch (IOException e) {
             throw new FileServiceException("Couldn't read file", e);
         }
