@@ -6,13 +6,17 @@ import java.util.stream.Collectors;
 
 public final class InputParser {
 
+    private static final int FIRST_NAME_INDEX = 0;
     private static final String DELIMITER = " ";
 
     private InputParser() {
     }
 
     public static List<String> parseInputForFirstToken(String input) {
-        return List.of(input.split(DELIMITER)[0].toUpperCase());
+        List<String> names = Arrays.stream(input.split(DELIMITER))
+                .map(String::toUpperCase)
+                .collect(Collectors.toList());
+        return names.size() > 2 ? List.of(names.get(FIRST_NAME_INDEX)) : List.of();
     }
 
     public static List<String> parseInputForAllTokens(String input) {
